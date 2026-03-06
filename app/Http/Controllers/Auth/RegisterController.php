@@ -28,7 +28,7 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        //return redirect()->route('workspace.create');
-        return redirect('/dashboard');
+        return redirect()->route('workspace.create');
+        // return redirect('/dashboard');
     }
 }
