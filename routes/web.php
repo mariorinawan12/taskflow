@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
@@ -32,6 +34,11 @@ Route::middleware('auth')->group(function () {
         ->name('workspace.create');
     Route::post('/workspaces', [WorkspaceController::class, 'store'])
         ->name('workspace.store');
+
+    Route::get('/invitations/{token}', [InvitationController::class, 'show'])
+        ->name('invitations.show');
+    Route::post('/invitations/{token}', [InvitationController::class, 'accept'])
+        ->name('invitations.accept');
 });
 
 Route::middleware(['auth', 'resolve.workspace'])
@@ -39,4 +46,8 @@ Route::middleware(['auth', 'resolve.workspace'])
     ->group(function () {
         Route::get('/dashboard', [WorkspaceController::class, 'dashboard'])
             ->name('workspace.dashboard');
+        Route::get('/members', [MemberController::class, 'index'])
+            ->name('workspace.members');
+        Route::post('/members/invite', [MemberController::class, 'invite'])
+            ->name('workspace.members.invite');
     });
