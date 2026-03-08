@@ -7,6 +7,7 @@ use App\Models\Scopes\WorkspaceScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Observers\ProjectObserver;
 
 class Project extends Model
 {
@@ -28,6 +29,7 @@ class Project extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new WorkspaceScope);
+        static::observe(ProjectObserver::class);
     }
 
     public function workspace(): BelongsTo

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\TaskObserver;
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Models\Scopes\WorkspaceScope;
@@ -36,6 +37,7 @@ class Task extends Model
     protected static function booted(): void
     {
         static::addGlobalScope(new WorkspaceScope());
+        static::observe(TaskObserver::class);
     }
 
     public function workspace(): BelongsTo
