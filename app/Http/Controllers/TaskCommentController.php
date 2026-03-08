@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Task;
 use App\Models\TaskComment;
 use App\Models\Workspace;
+use App\Notifications\CommentAdded;
 use Illuminate\Http\RedirectResponse;
 class TaskCommentController extends Controller
 {
@@ -15,12 +16,22 @@ class TaskCommentController extends Controller
     {
         $workspace = Workspace::find(session('current_workspace_id'));
 
-        TaskComment::create([
+
+
+        $comment = TaskComment::create([
             'workspace_id' => $workspace->id,
             'task_id' => $task->id,
             'user_id' => auth()->id(),
             'body' => $request->body,
         ]);
+
+        if ($task->assigned_to && $task->assigned_to !== auth()->id()) {
+            $task->assignee->notify(new CommentAdded($comment, auth()->user()->name));
+        }
+
+        if ($task->created_by !== auth()->id()) {
+            $task->creator->notify(new CommentAdded($comment, auth()->user()->name));
+        }
 
         return redirect()->route('tasks.show', [
             $workspace->slug,

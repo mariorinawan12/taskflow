@@ -4,6 +4,8 @@ namespace App\Observers;
 
 use App\Models\Task;
 use App\Models\Activity;
+use App\Models\User;
+use App\Notifications\TaskAssigned;
 
 class TaskObserver
 {
@@ -20,6 +22,13 @@ class TaskObserver
             'description' => auth()->user()->name . 'created task "' . $task->title . '"',
             'properties' => null
         ]);
+
+
+        if ($task->assigned_to && $task->assigned_to !== auth()->id()) {
+            $assignee = User::find($task->assigned_to);
+            $assignee->notify(new TaskAssigned($task, auth()->user()->name));
+        }
+
     }
 
     /**
@@ -40,6 +49,11 @@ class TaskObserver
         }
         if (isset($changes['assigned_to'])) {
             $descriptions[] = 'assignee is changed';
+
+            if ($changes['assigned_to'] && $changes['assigned_to'] !== auth()->id()) {
+                $assignee = User::find($changes['assigned_to']);
+                $assignee->notify(new TaskAssigned($task, auth()->user()->name));
+            }
         }
         if (isset($changes['priority'])) {
             $descriptions[] = 'priority to "' . $changes['priority'] . '"';
