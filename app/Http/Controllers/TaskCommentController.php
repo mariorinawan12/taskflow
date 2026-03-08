@@ -14,6 +14,7 @@ class TaskCommentController extends Controller
 {
     public function store(StoreTaskCommentRequest $request, string $workspace, Project $project, Task $task): RedirectResponse
     {
+        $this->authorize('create', TaskComment::class);
         $workspace = Workspace::find(session('current_workspace_id'));
 
 
@@ -42,6 +43,7 @@ class TaskCommentController extends Controller
 
     public function destroy(string $workspace, Project $project, Task $task, TaskComment $comment): RedirectResponse
     {
+        $this->authorize('delete', $comment);
         $workspace = Workspace::find(session('current_workspace_id'));
 
         if ($comment->user_id !== auth()->id()) {

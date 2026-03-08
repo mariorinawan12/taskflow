@@ -22,11 +22,13 @@ class ProjectController extends Controller
 
     public function create(): View
     {
+        $this->authorize('create', Project::class);
         return view('projects.create');
     }
 
     public function store(StoreProjectRequest $request): RedirectResponse
     {
+        $this->authorize('create', Project::class);
         $workspace = Workspace::find(session('current_workspace_id'));
 
         $project = Project::create([
@@ -52,11 +54,13 @@ class ProjectController extends Controller
 
     public function edit(string $workspace, Project $project): View
     {
+        $this->authorize('update', $project);
         return view('projects.edit', compact('project'));
     }
 
     public function update(UpdateProjectRequest $request, string $workspace, Project $project): RedirectResponse
     {
+        $this->authorize('update', $project);
         $workspace = Workspace::find(session('current_workspace_id'));
 
         $project->update($request->validated());
@@ -69,6 +73,7 @@ class ProjectController extends Controller
 
     public function archive(string $workspace, Project $project): RedirectResponse
     {
+        $this->authorize('archive', $project);
         $workspace = Workspace::find(session('current_workspace_id'));
         $project->update(['status' => ProjectStatus::Archived]);
 

@@ -16,6 +16,7 @@ class TaskController extends Controller
 {
     public function create(string $workspace, Project $project): View
     {
+        $this->authorize('create', Task::class);
         $workspace = Workspace::find(session('current_workspace_id'));
         $members = $workspace->members()->get();
 
@@ -24,6 +25,7 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request, string $workspace, Project $project): RedirectResponse
     {
+        $this->authorize('create', Task::class);
         $workspace = Workspace::find(session('current_workspace_id'));
 
         Task::create([
@@ -55,6 +57,7 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, string $workspace, Project $project, Task $task): RedirectResponse
     {
+        $this->authorize('update', $task);
         $workspace = Workspace::find(session('current_workspace_id'));
         $task->update($request->validated());
 
@@ -67,6 +70,7 @@ class TaskController extends Controller
 
     public function destroy(string $workspace, Project $project, Task $task): RedirectResponse
     {
+        $this->authorize('delete', $task);
         $workspace = Workspace::find(session('current_workspace_id'));
 
         $task->delete();
