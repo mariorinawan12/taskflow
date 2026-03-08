@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskCommentController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -45,6 +46,11 @@ Route::middleware('auth')->group(function () {
         ->name('invitations.accept');
     Route::get('/workspaces', [WorkspaceController::class, 'index'])
         ->name('workspace.index');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
 });
 
 Route::middleware(['auth', 'resolve.workspace'])

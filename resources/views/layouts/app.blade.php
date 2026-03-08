@@ -52,10 +52,13 @@
         </nav>
 
         <div class="px-3 py-4 border-t border-gray-800">
-            <div class="px-3 py-2 mb-2">
-                <p class="text-white text-sm font-medium">{{ auth()->user()->name }}</p>
-                <p class="text-gray-500 text-xs">{{ auth()->user()->email }}</p>
-            </div>
+            <a href="{{ route('profile.edit') }}"
+                class="flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-colors mb-2{{ request()->routeIs('profile.*') ? 'bg-gray-800 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
+                <div>
+                    <p class="text-white text-sm font-medium">{{ auth()->user()->name }}</p>
+                    <p class="text-gray-500 text-xs">{{ auth()->user()->email }}</p>
+                </div>
+            </a>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit"

@@ -7,6 +7,7 @@ use App\Models\Workspace;
 use App\Enums\WorkspaceRole;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\Activity;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -30,8 +31,12 @@ class WorkspaceController extends Controller
         $projectCount = Project::count();
         $memberCount = $workspace->members()->count();
         $myTaskCount = Task::where('assigned_to', auth()->id())->count();
+        $activities = Activity::with('user')
+            ->latest('created_at')
+            ->limit(10)
+            ->get();
 
-        return view('workspace.dashboard', compact('projectCount', 'memberCount', 'myTaskCount'));
+        return view('workspace.dashboard', compact('projectCount', 'memberCount', 'myTaskCount', 'activities'));
     }
 
     public function store(StoreWorkspaceRequest $request): RedirectResponse
