@@ -21,7 +21,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('workspace.create'));
+            return redirect()->intended(route('workspace.index'));
             // return redirect()->intended('/dashboard');
         }
 

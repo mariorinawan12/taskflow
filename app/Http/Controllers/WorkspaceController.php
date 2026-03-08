@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreWorkspaceRequest;
 use App\Models\Workspace;
 use App\Enums\WorkspaceRole;
+use App\Models\Project;
+use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -16,9 +18,20 @@ class WorkspaceController extends Controller
         return view('workspace.create');
     }
 
+    public function index(): View
+    {
+        $workspaces = auth()->user()->workspaces()->get();
+        return view('workspace.index', compact('workspaces'));
+    }
+
     public function dashboard(): View
     {
-        return view('workspace.dashboard');
+        $workspace = Workspace::find(session('current_workspace_id'));
+        $projectCount = Project::count();
+        $memberCount = $workspace->members()->count();
+        $myTaskCount = Task::where('assigned_to', auth()->id())->count();
+
+        return view('workspace.dashboard', compact('projectCount', 'memberCount', 'myTaskCount'));
     }
 
     public function store(StoreWorkspaceRequest $request): RedirectResponse

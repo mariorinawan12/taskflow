@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Project - {{ $currentWorkspace->name }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+@section('title', 'Create Project')
 
-<body class="bg-gray-950 text-gray-200 min-h-screen flex items-center justify-center">
+@section('content')
+
     <div class="w-full max-w-md px-8 py-10 bg-gray-900 rounded-2xl border border-gray-800">
         <div class="mb-8">
             <h1 class="text-2xl font-bold text-white">Create Project</h1>
@@ -35,8 +30,8 @@
                 <label class="block text-sm text-gray-400 mb-1.5">Description</label>
                 <textarea name="description" rows="3" placeholder="Optional"
                     class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-600 focus:outline-none focus:border-lime-500">
-                    {{ old('description') }}
-                </textarea>
+                                {{ old('description') }}
+                            </textarea>
             </div>
 
             <button type="submit"
@@ -54,6 +49,4 @@
 
     </div>
 
-</body>
-
-</html>
+@endsection

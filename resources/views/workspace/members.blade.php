@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Members - {{ $currentWorkspace->name }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+@section('title', 'Members')
 
-<body class="bg-gray-950 text-gray-200 min-h-screen p-8">
+@section('content')
+
+
     <div class="max-w-2xl mx-auto">
         <div class="mb-8">
             <h1 class="text-2xl font-bold text-white">Members</h1>
@@ -70,16 +66,7 @@
                 @endforeach
             </div>
         </div>
-
-        <div class="mt-6">
-            <a href="{{ route('workspace.dashboard', $currentWorkspace->slug) }}"
-                class="text-gray-500 hover:text-white text-sm transition-colors">
-                ← Back to Dashboard
-            </a>
-        </div>
     </div>
-</body>
 
 
-
-</html>
+@endsection

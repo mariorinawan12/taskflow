@@ -1,28 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $currentWorkspace->name }} - TaskFlow</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+@section('title', 'Dashboard')
 
-<body class="bg-gray950 text-gray-200 min-h-screen flex items-center justify-center">
-    <div class="text-center">
-        <h1 class="text-3xl font-bold text-white mb-2">
-            {{ $currentWorkspace->name }}
-        </h1>
-        <p class="test-gray-500 mb-8">Dashboard Workspace</p>
+@section('content')
 
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button class="px-4 py-2 bg-red-500 rounded-lg text-white">
-                Logout
-            </button>
-        </form>
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-white">Dashboard</h1>
+        <p class="text-gray-500 text-sm mt-1">Welcome, {{ auth()->user()->name }}</p>
     </div>
 
-</body>
+    <div class="grid grid-cols-3 gap-6">
+        <a href="{{ route('projects.index', $currentWorkspace->slug) }}"
+            class="p-6 bg-gray-900 border border-gray-800 rounded-2xl hover:border-gray-700 transition-colors">
+            <p class="text-gray-400 text-sm mb-1">Projects</p>
+            <p class="text-white text-2xl font-bold">{{ $projectCount }}</p>
+        </a>
 
-</html>
+        <a href="{{ route('workspace.members', $currentWorkspace->slug) }}"
+            class="p-6 bg-gray-900 border border-gray-800 rounded-2xl hover:border-gray-700 transition-colors">
+            <p class="text-gray-400 text-sm mb-1">Members</p>
+            <p class="text-white text-2xl font-bold">{{ $memberCount }}</p>
+        </a>
+
+        <div class="p-6 bg-gray-900 border border-gray-800 rounded-2xl">
+            <p class="text-gray-400 text-sm mb-1">My Tasks</p>
+            <p class="text-white text-2xl font-bold">{{ $myTaskCount }}</p>
+        </div>
+    </div>
+
+@endsection

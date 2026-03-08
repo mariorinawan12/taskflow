@@ -1,14 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $project->name }} - {{ $currentWorkspace->name }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+@section('title', '{{ $project->name }} - {{ $currentWorkspace->name }}')
 
-<body class="bg-gray-950 text-gray-200 min-h-screen p-8">
+@section('content')
+
     <div class="max-w-5xl mx-auto">
         <div class="flex items-center justify-between mb-8">
             <div>
@@ -83,6 +78,5 @@
             </div>
         </div>
     </div>
-</body>
 
-</html>
+@endsection

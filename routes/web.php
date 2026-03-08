@@ -9,10 +9,11 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskCommentController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('workspace.create');
+        return redirect()->route('workspace.index');
     }
     return redirect()->route('login');
 });
@@ -42,6 +43,8 @@ Route::middleware('auth')->group(function () {
         ->name('invitations.show');
     Route::post('/invitations/{token}', [InvitationController::class, 'accept'])
         ->name('invitations.accept');
+    Route::get('/workspaces', [WorkspaceController::class, 'index'])
+        ->name('workspace.index');
 });
 
 Route::middleware(['auth', 'resolve.workspace'])
@@ -84,4 +87,9 @@ Route::middleware(['auth', 'resolve.workspace'])
             ->name('tasks.comments.store');
         Route::delete('/projects/{project}/tasks/comments/{comment}', [TaskCommentController::class, 'destroy'])
             ->name('task.comments.destroy');
+
+        Route::get('/notifications', [NotificationController::class, 'index'])
+            ->name('notifications.index');
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])
+            ->name('notifications.destroy');
     });
