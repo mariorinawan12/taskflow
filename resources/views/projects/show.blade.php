@@ -37,7 +37,7 @@
             <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4">
                 <h2 class="text=sm font-semibold text-gray-400 uppercase tracking-wide mb-4">Todo</h2>
                 <div class="space-y-3">
-                    @foreach($tasks->where('status->value', 'todo') as $task)
+                    @foreach($tasks->filter(fn($t) => $t->status->value === 'todo') as $task)
                         <a href="{{ route('tasks.show', [$currentWorkspace->slug, $project->id, $task->id]) }}"
                             class="block p-3 bg-gray-800 rounded-xl hover:bg-gray-750 transition-colors">
                             <p class="text-white text-sm">{{ $task->title }}</p>
@@ -52,7 +52,7 @@
             <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4">
                 <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">In Progress</h2>
                 <div class="space-y-3">
-                    @foreach($task->where('status->value', 'in_progress') as $task)
+                    @foreach($tasks->filter(fn($t) => $t->status->value === 'in_progress') as $task)
                         <a href="{{ route('tasks.show', [$currentWorkspace->slug, $project->id, $task->id]) }}"
                             class="block p-3 bg-gray-800 rounded-xl hover:bg-gray-750 transition-colors">
                             <p class="text-white text-sm">{{ $task->title }}</p>
@@ -69,7 +69,7 @@
                     Done
                 </h2>
                 <div class="space-y-3">
-                    @foreach($tasks->where('status->value', 'done') as $task)
+                    @foreach($tasks->filter(fn($t) => $t->status->value === 'done') as $task)
                         <a href="{{ route('tasks.show', [$currentWorkspace->slug, $project->id, $task->id]) }}"
                             class="block p-3 bg-gray-800 rounded-xl hover:bg-gray-750 transition-colors">
                             <p class="text-white text-sm">{{ $task->title }}</p>

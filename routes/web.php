@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskCommentController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -78,4 +79,9 @@ Route::middleware(['auth', 'resolve.workspace'])
             ->name('tasks.update');
         Route::delete('/projects/{project}/tasks/{task}', [TaskController::class, 'destroy'])
             ->name('tasks.destroy');
+
+        Route::post('/projects/{project}/tasks/{task}/comments', [TaskCommentController::class, 'store'])
+            ->name('tasks.comments.store');
+        Route::delete('/projects/{project}/tasks/comments/{comment}', [TaskCommentController::class, 'destroy'])
+            ->name('task.comments.destroy');
     });

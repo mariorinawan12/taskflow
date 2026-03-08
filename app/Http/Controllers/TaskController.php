@@ -14,7 +14,7 @@ use Illuminate\View\View;
 
 class TaskController extends Controller
 {
-    public function create(Project $project): View
+    public function create(string $workspace, Project $project): View
     {
         $workspace = Workspace::find(session('current_workspace_id'));
         $members = $workspace->members()->get();
@@ -22,7 +22,7 @@ class TaskController extends Controller
         return view('tasks.create', compact('project', 'members'));
     }
 
-    public function store(StoreTaskRequest $request, Project $project): RedirectResponse
+    public function store(StoreTaskRequest $request, string $workspace, Project $project): RedirectResponse
     {
         $workspace = Workspace::find(session('current_workspace_id'));
 
@@ -44,7 +44,7 @@ class TaskController extends Controller
         ]);
     }
 
-    public function show(Project $project, Task $task): View
+    public function show(string $workspace, Project $project, Task $task): View
     {
         $workspace = Workspace::find(session('current_workspace_id'));
         $members = $workspace->members()->get();
@@ -53,7 +53,7 @@ class TaskController extends Controller
         return view('tasks.show', compact('project', 'task', 'members', 'comments'));
     }
 
-    public function update(UpdateTaskRequest $request, Project $project, Task $task): RedirectResponse
+    public function update(UpdateTaskRequest $request, string $workspace, Project $project, Task $task): RedirectResponse
     {
         $workspace = Workspace::find(session('current_workspace_id'));
         $task->update($request->validated());
@@ -65,7 +65,7 @@ class TaskController extends Controller
         ]);
     }
 
-    public function destroy(Project $project, Task $task): RedirectResponse
+    public function destroy(string $workspace, Project $project, Task $task): RedirectResponse
     {
         $workspace = Workspace::find(session('current_workspace_id'));
 

@@ -43,19 +43,19 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function show(Project $project): View
+    public function show(string $workspace, Project $project): View
     {
         $tasks = $project->tasks()->orderBy('order')->get();
 
         return view('projects.show', compact('project', 'tasks'));
     }
 
-    public function edit(Project $project): View
+    public function edit(string $workspace, Project $project): View
     {
         return view('projects.edit', compact('project'));
     }
 
-    public function update(UpdateProjectRequest $request, Project $project): RedirectResponse
+    public function update(UpdateProjectRequest $request, string $workspace, Project $project): RedirectResponse
     {
         $workspace = Workspace::find(session('current_workspace_id'));
 
@@ -67,7 +67,7 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function archive(Project $project): RedirectResponse
+    public function archive(string $workspace, Project $project): RedirectResponse
     {
         $workspace = Workspace::find(session('current_workspace_id'));
         $project->update(['status' => ProjectStatus::Archived]);
