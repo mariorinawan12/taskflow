@@ -28,7 +28,7 @@ class Workspace extends Model
 
     public function projects(): HasMany
     {
-        return $this->hasMany(WorkspaceInvitation::class);
+        return $this->hasMany(Project::class);
     }
 
     public function invitations(): HasMany

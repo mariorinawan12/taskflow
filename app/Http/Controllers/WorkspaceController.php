@@ -28,15 +28,39 @@ class WorkspaceController extends Controller
     public function dashboard(): View
     {
         $workspace = Workspace::find(session('current_workspace_id'));
-        $projectCount = Project::count();
+
+        $projectCount = $workspace->projects()->count();
         $memberCount = $workspace->members()->count();
+
+        $myTasks = Task::with('project')
+            ->where('assigned_to', auth()->id())
+            ->where('status', '!=', 'done')
+            ->orderByRaw("CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 END")
+            ->latest()
+            ->limit(10)
+            ->get();
+
         $myTaskCount = Task::where('assigned_to', auth()->id())->count();
+
+        $overdueCount = Task::where('assigned_to', auth()->id())
+            ->where('due_date', '<', now()->toDateString())
+            ->where('status', '!=', 'done')
+            ->count();
+
         $activities = Activity::with('user')
             ->latest('created_at')
             ->limit(10)
             ->get();
 
-        return view('workspace.dashboard', compact('projectCount', 'memberCount', 'myTaskCount', 'activities'));
+        return view('workspace.dashboard', compact(
+            'projectCount',
+            'memberCount',
+            'myTaskCount',
+            'myTasks',
+            'overdueCount',
+            'activities'
+        ));
+
     }
 
     public function store(StoreWorkspaceRequest $request): RedirectResponse
