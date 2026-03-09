@@ -15,7 +15,20 @@ class ProjectController extends Controller
 {
     public function index(): View
     {
-        $projects = Project::latest()->get();
+        $projects = Project::withCount([
+            'tasks',
+            'tasks as todo_count' => function ($q) {
+                $q->where('status', 'todo');
+            },
+            'tasks as in_progress_count' => function ($q) {
+                $q->where('status', 'in_progress');
+            },
+            'tasks as done_count' => function ($q) {
+                $q->where('status', 'done');
+            },
+        ])
+            ->latest()
+            ->get();
 
         return view('projects.index', compact('projects'));
     }

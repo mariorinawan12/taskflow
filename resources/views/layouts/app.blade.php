@@ -117,10 +117,10 @@
             <a href="{{ route('profile.edit') }}"
                 class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 {{ request()->routeIs('profile.*') ? 'bg-gray-800' : 'hover:bg-gray-800/70' }}">
                 <div
-                    class="w-8 h-8 rounded-full bg-linear-to-br from-lime-400 to-emerald-500 flex items-center justify-center text-xs font-bold text-black shrink-0">
+                    class="w-8 h-8 rounded-full bg-gradient-to-br from-lime-400 to-emerald-500 flex items-center justify-center text-xs font-bold text-black shrink-0">
                     {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                 </div>
-                <div class="min-w-8">
+                <div class="min-w-0">
                     <p class="text-white text-sm font-medium truncate">{{ auth()->user()->name }}</p>
                     <p class="text-gray-500 text-xs truncate">{{ auth()->user()->email }}</p>
                 </div>

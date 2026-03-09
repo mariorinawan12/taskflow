@@ -19,7 +19,7 @@ class TaskObserver
             'user_id' => auth()->id(),
             'subject_type' => 'Task',
             'subject_id' => $task->id,
-            'description' => auth()->user()->name . 'created task "' . $task->title . '"',
+            'description' => auth()->user()->name . ' created task "' . $task->title . '"',
             'properties' => null
         ]);
 
@@ -45,7 +45,7 @@ class TaskObserver
         $descriptions = [];
 
         if (isset($changes['status'])) {
-            $descriptions[] = 'status to"' . $changes['status'] . '"';
+            $descriptions[] = 'status to "' . $changes['status'] . '"';
         }
         if (isset($changes['assigned_to'])) {
             $descriptions[] = 'assignee is changed';
@@ -71,7 +71,7 @@ class TaskObserver
             'user_id' => auth()->id(),
             'subject_type' => 'Task',
             'subject_id' => $task->id,
-            'description' => auth()->user()->name . ' change ' . implode(', ', $descriptions),
+            'description' => auth()->user()->name . ' changed ' . implode(', ', $descriptions),
             'properties' => $changes,
         ]);
     }
@@ -86,7 +86,7 @@ class TaskObserver
             'user_id' => auth()->id(),
             'subject_type' => 'Task',
             'subject_id' => $task->id,
-            'description' => auth()->user()->name . ' delete task "' . $task->title . '"',
+            'description' => auth()->user()->name . ' deleted task "' . $task->title . '"',
             'properties' => null,
         ]);
     }

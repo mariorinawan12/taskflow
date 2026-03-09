@@ -91,7 +91,7 @@ Route::middleware(['auth', 'resolve.workspace'])
 
         Route::post('/projects/{project}/tasks/{task}/comments', [TaskCommentController::class, 'store'])
             ->name('tasks.comments.store');
-        Route::delete('/projects/{project}/tasks/comments/{comment}', [TaskCommentController::class, 'destroy'])
+        Route::delete('/projects/{project}/tasks/{task}/comments/{comment}', [TaskCommentController::class, 'destroy'])
             ->name('task.comments.destroy');
 
         Route::get('/notifications', [NotificationController::class, 'index'])

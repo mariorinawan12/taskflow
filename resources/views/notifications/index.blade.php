@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <div class="max-w-2xl">
+    <div>
         <div class="mb-8">
             <h1 class="text-2xl font-bold text-white">Notifications</h1>
             <p class="text-gray-500 text-sm mt-1">All your notifications.</p>

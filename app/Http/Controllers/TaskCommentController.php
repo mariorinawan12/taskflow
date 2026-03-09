@@ -30,7 +30,7 @@ class TaskCommentController extends Controller
             $task->assignee->notify(new CommentAdded($comment, auth()->user()->name));
         }
 
-        if ($task->created_by !== auth()->id()) {
+        if ($task->created_by !== auth()->id() && $task->created_by !== $task->assigned_to) {
             $task->creator->notify(new CommentAdded($comment, auth()->user()->name));
         }
 
@@ -45,10 +45,6 @@ class TaskCommentController extends Controller
     {
         $this->authorize('delete', $comment);
         $workspace = Workspace::find(session('current_workspace_id'));
-
-        if ($comment->user_id !== auth()->id()) {
-            abort(403, 'You have no access to delete comment.');
-        }
 
         $comment->delete();
 

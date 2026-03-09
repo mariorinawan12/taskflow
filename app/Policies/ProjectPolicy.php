@@ -11,6 +11,10 @@ class ProjectPolicy
     private function getUserRole(User $user): string
     {
         $workspace = Workspace::find(session('current_workspace_id'));
+        if (!$workspace)
+            return null;
+
+
         return $workspace->members()
             ->where('user_id', $user->id)
             ->first()

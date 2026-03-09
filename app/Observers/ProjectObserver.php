@@ -18,7 +18,7 @@ class ProjectObserver
             'user_id' => auth()->id(),
             'subject_type' => 'Project',
             'subject_id' => $project->id,
-            'description' => auth()->user()->name . ' create project "' . $project->name . '"',
+            'description' => auth()->user()->name . ' created project "' . $project->name . '"',
             'properties' => null,
         ]);
     }
@@ -66,7 +66,7 @@ class ProjectObserver
             'user_id' => auth()->id(),
             'subject_type' => 'Project',
             'subject_id' => $project->id,
-            'description' => auth()->user()->name . ' delete project "' . $project->name . '"',
+            'description' => auth()->user()->name . ' deleted project "' . $project->name . '"',
             'properties' => null,
         ]);
     }

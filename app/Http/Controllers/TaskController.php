@@ -50,6 +50,7 @@ class TaskController extends Controller
     {
         $workspace = Workspace::find(session('current_workspace_id'));
         $members = $workspace->members()->get();
+        $task->load(['creator', 'assignee']);
         $comments = $task->comments()->with('author')->latest()->get();
 
         return view('tasks.show', compact('project', 'task', 'members', 'comments'));
