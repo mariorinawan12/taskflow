@@ -38,6 +38,7 @@ class CommentAdded extends Notification
             'task_id' => $this->comment->task_id,
             'task_title' => $this->comment->task->title,
             'project_id' => $this->comment->task->project_id,
+            'project_name' => $this->comment->task->project->name,
             'comment_by' => $this->commentBy,
             'comment_body' => substr($this->comment->body, 0, 100),
             'workspace_id' => $this->comment->workspace_id,

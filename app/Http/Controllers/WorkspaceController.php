@@ -21,7 +21,7 @@ class WorkspaceController extends Controller
 
     public function index(): View
     {
-        $workspaces = auth()->user()->workspaces()->get();
+        $workspaces = auth()->user()->workspaces()->withCount(['members', 'projects'])->get();
         return view('workspace.index', compact('workspaces'));
     }
 

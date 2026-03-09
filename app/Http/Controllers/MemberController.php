@@ -21,7 +21,13 @@ class MemberController extends Controller
         $members = $workspace->members()
             ->withPivot('role', 'joined_at')
             ->get();
-        return view('workspace.members', compact('members'));
+
+        $currentUserRole = $workspace->members()
+            ->where('user_id', auth()->id())
+            ->first()
+            ->pivot->role;
+
+        return view('workspace.members', compact('members', 'currentUserRole'));
     }
 
     public function invite(StoreInvitationRequest $request): RedirectResponse
