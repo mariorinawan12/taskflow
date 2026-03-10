@@ -33,23 +33,30 @@ class WorkspaceController extends Controller
         $memberCount = $workspace->members()->count();
 
         $myTasks = Task::with('project')
-            ->where('assigned_to', auth()->id())
+            ->whereHas('assignees', function ($query) {
+                $query->where('user_id', auth()->id());
+            })
             ->where('status', '!=', 'done')
             ->orderByRaw("CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 END")
             ->latest()
             ->limit(10)
             ->get();
 
-        $myTaskCount = Task::where('assigned_to', auth()->id())->count();
+        $myTaskCount = Task::whereHas('assignees', function ($query) {
+            $query->where('user_id', auth()->id());
+        })->count();
 
-        $overdueCount = Task::where('assigned_to', auth()->id())
-            ->where('due_date', '<', now()->toDateString())
+        $overdueCount = Task::whereHas('assignees', function ($query) {
+            $query->where('user_id', auth()->id());
+        })
             ->where('status', '!=', 'done')
+            ->whereNotNull('due_date')
+            ->whereDate('due_date', '<', today())
             ->count();
 
         $activities = Activity::with('user')
             ->latest('created_at')
-            ->limit(10)
+            ->limit(5)
             ->get();
 
         return view('workspace.dashboard', compact(

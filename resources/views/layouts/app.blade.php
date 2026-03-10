@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'TaskFlow') - {{ $currentWorkspace->name }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,23 +53,29 @@
     <aside
         class="w-64 min-h-screen bg-gray-900/80 backdrop-blur-sm border-r border-gray-800/50 flex flex-col fixed left-0 top-0 z-30">
         <div class="px-5 py-4 border-b border-gray-800/50">
-            <div class="flex items-center gap-2.5 mb-3">
-                <div class="w-8 h-8 bg-lime-500 rounded-lg flex items-center justify-center">
-                    <span class="text-black font-bold text-sm">T</span>
-                </div>
-                <span class="text-white font-semibold text-lg tracking-tight">TaskFlow</span>
-            </div>
             <div class="flex items-center justify-between">
-                <div class="min-w-0">
-                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Workspace</p>
-                    <h2 class="text-gray-200 font-medium text-sm truncate">{{ $currentWorkspace->name }}</h2>
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center shrink-0">
+                        <span class="text-white font-semibold text-sm">
+                            {{ strtoupper(substr($currentWorkspace->name, 0, 1)) }}
+                        </span>
+                    </div>
+                    <div class="min-w-0">
+                        <h2 class="text-white font-semibold text-sm truncate">
+                            {{ $currentWorkspace->name }}
+                        </h2>
+                        <p class="text-gray-600 text-[11px] truncate">
+                            {{ auth()->user()->email }}
+                        </p>
+                    </div>
                 </div>
                 <a href="{{ route('workspace.index') }}"
-                    class="text-gray-500 hover:text-lime-400 transition-colors shrink-0 p-1 hover:bg-gray-800 rounded-lg"
+                    class="text-gray-500 hover:text-white transition-colors shrink-0 p-1.5 hover:bg-gray-800 rounded-lg"
                     title="Switch Workspace">
-                    <i data-lucide="repeat" class="w-3.5 h-3.5"></i>
+                    <i data-lucide="chevrons-up-down" class="w-3.5 h-3.5"></i>
                 </a>
             </div>
+
         </div>
 
         {{-- Navigation --}}
@@ -101,7 +110,8 @@
                     Notifications
                 </span>
                 @php
-                    $unreadCount = auth()->user()->unreadNotifications()->count();
+                    $unreadCount = auth()->user()->unreadNotifications()->whereRaw("(data::jsonb->>'workspace_id')::integer = ?", [session('current_workspace_id')])->count();
+
                 @endphp
                 @if($unreadCount > 0)
                     <span

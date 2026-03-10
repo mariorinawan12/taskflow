@@ -28,17 +28,20 @@ class TaskController extends Controller
         $this->authorize('create', Task::class);
         $workspace = Workspace::find(session('current_workspace_id'));
 
-        Task::create([
+        $task = Task::create([
             'workspace_id' => $workspace->id,
             'project_id' => $project->id,
             'title' => $request->title,
             'description' => $request->description,
             'status' => TaskStatus::Todo,
             'priority' => $request->priority,
-            'assigned_to' => $request->assigned_to,
             'due_date' => $request->due_date,
             'created_by' => auth()->id(),
         ]);
+
+        if ($request->has('assignees')) {
+            $task->assignees()->attach($request->assignees);
+        }
 
         return redirect()->route('projects.show', [
             $workspace->slug,
@@ -50,7 +53,7 @@ class TaskController extends Controller
     {
         $workspace = Workspace::find(session('current_workspace_id'));
         $members = $workspace->members()->get();
-        $task->load(['creator', 'assignee']);
+        $task->load(['creator', 'assignees']);
         $comments = $task->comments()->with('author')->latest()->get();
 
         return view('tasks.show', compact('project', 'task', 'members', 'comments'));
@@ -60,8 +63,11 @@ class TaskController extends Controller
     {
         $this->authorize('update', $task);
         $workspace = Workspace::find(session('current_workspace_id'));
-        $task->update($request->validated());
+        $task->update($request->safe()->except('assignees'));
 
+        if ($request->has('_update_assignees')) {
+            $task->assignees()->sync($request->input('assignees', []));
+        }
         return redirect()->route('tasks.show', [
             $workspace->slug,
             $project->id,
@@ -80,5 +86,18 @@ class TaskController extends Controller
             $workspace->slug,
             $project->id,
         ]);
+    }
+
+    public function updateStatus(Request $request, string $workspaceSlug, string $projectId, string $taskId)
+    {
+        $task = Task::findOrFail($taskId);
+
+        $request->validate([
+            'status' => ['required', 'in:todo,in_progress,done'],
+        ]);
+
+        $task->update(['status' => $request->status]);
+
+        return response()->json(['success' => true]);
     }
 }

@@ -63,17 +63,42 @@
                     </div>
 
                     {{-- Assignee --}}
-                    <div>
+                    <div class="relative" x-data="{open: false}">
                         <label class="block text-xs text-gray-500 mb-1.5">Assign To</label>
-                        <select name="assigned_to"
-                            class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white focus:outline-none focus:border-gray-500">
-                            <option value="">Unassigned</option>
-                            @foreach($members as $member)
-                                <option value="{{ $member->id }}" {{ old('assigned_to') == $member->id ? 'selected' : '' }}>
-                                    {{ $member->name }}
-                                </option>
-                            @endforeach
-                        </select>
+
+                        <button type="button" @click="open = !open" @click.away="open = false"
+                        class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-left text-white focus:outline-none focus:border-gray-500 flex justify-between items-center">
+                            <span class="text-gray-400">Select assignees...</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400"></i>
+                        </button>
+
+                        <div x-show="open" style="display: none;" @click.stop
+                            class="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                            <div class="p-2 space-y-1">
+                                <label class="flex items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer">
+                                    <input type="checkbox" name="assignees[]" value="{{ auth()->id() }}"
+                                        class="rounded border-gray-600 text-indigo-500 focus:ring-indigo-500 bg-gray-900"
+                                        {{ in_array(auth()->id(), old('assignees', [])) ? 'checked' : '' }}>
+                                        <span class="text-sm text-white">
+                                            Assign to me ({{ auth()->user()->name }})
+                                        </span>
+                                </label>
+                                <div class="h-px bg-gray-700 my-1"></div>
+                                <div class="px-2 py-1 text-xs font-semibold text-gray-500">Members</div>
+
+                                @foreach($members as $member)
+                                    @if($member->id !== auth()->id())
+                                        <label class="flex items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer">
+                                            <input type="checkbox" name="assignees[]" value="{{ $member->id }}"
+                                                class="rounded border-gray-600 text-indigo-500 focus:ring-indigo-500 bg-gray-900"
+                                                    {{ in_array($member->id, old('assignees', [])) ? 'checked' : '' }}>
+                                                    <span class="text-sm text-gray-300">{{ $member->name }}</span>
+                                        </label>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+
                     </div>
 
                     {{-- Actions --}}

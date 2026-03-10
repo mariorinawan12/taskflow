@@ -42,9 +42,9 @@ class User extends Authenticable
             ->withPivot('role', 'joined_at');
     }
 
-    public function assignedTasks(): HasMany
+    public function assignedTasks(): BelongsToMany
     {
-        return $this->hasMany(Task::class, 'assigned_to');
+        return $this->belongsToMany(Task::class, 'task_user');
     }
 
     public function createdTasks(): HasMany

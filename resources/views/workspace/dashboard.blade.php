@@ -87,10 +87,11 @@
                                 <p class="text-gray-600 text-xs mt-0.5">{{ $task->project->name }}</p>
                             </div>
 
-                            <span class="text-xs px-2 py-1 rounded-md shrink-0
-                                                                            {{ $task->status->value === 'todo' ? 'bg-gray-800 text-gray-400' : '' }}
-                                                                            {{ $task->status->value === 'in_progress' ? 'bg-blue-500/10 text-blue-400' : '' }}
-                                                                        ">
+                            <span
+                                class="text-xs px-2 py-1 rounded-md shrink-0
+                                                                                                                                                                                                    {{ $task->status->value === 'todo' ? 'bg-gray-800 text-gray-400' : '' }}
+                                                                                                                                                                                                    {{ $task->status->value === 'in_progress' ? 'bg-blue-500/10 text-blue-400' : '' }}
+                                                                                                                                                                                                ">
                                 {{ $task->status->value === 'in_progress' ? 'In Progress' : 'Todo' }}
                             </span>
 
@@ -115,14 +116,14 @@
                     <p class="text-gray-600 text-sm">No activity yet</p>
                 </div>
             @else
-                <div class="divide-y divide-gray-800">
+                <div
+                    class="divide-y divide-gray-800 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent pr-2">
                     @foreach($activities as $activity)
-                        <div class="px-5 py-3.5">
-                            <p class="text-gray-300 text-sm leading-relaxed">
-                                <span class="text-white font-medium">{{ $activity->user->name }}</span>
+                        <div class="px-4 py-3">
+                            <p class="text-gray-300 text-[12px] leading-relaxed">
                                 {{ $activity->description }}
                             </p>
-                            <p class="text-gray-600 text-xs mt-1">
+                            <p class="text-gray-600 text-[10px] mt-1">
                                 {{ $activity->created_at->diffForHumans() }}
                             </p>
                         </div>

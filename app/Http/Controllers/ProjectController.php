@@ -60,7 +60,7 @@ class ProjectController extends Controller
 
     public function show(string $workspace, Project $project): View
     {
-        $tasks = $project->tasks()->with('assignee')->orderBy('order')->get();
+        $tasks = $project->tasks()->with('assignees')->orderBy('order')->get();
 
         return view('projects.show', compact('project', 'tasks'));
     }

@@ -88,6 +88,8 @@ Route::middleware(['auth', 'resolve.workspace'])
             ->name('tasks.update');
         Route::delete('/projects/{project}/tasks/{task}', [TaskController::class, 'destroy'])
             ->name('tasks.destroy');
+        Route::patch('/projects/{project}/tasks/{task}/status', [TaskController::class, 'updateStatus'])
+            ->name('tasks.updateStatus');
 
         Route::post('/projects/{project}/tasks/{task}/comments', [TaskCommentController::class, 'store'])
             ->name('tasks.comments.store');

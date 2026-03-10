@@ -71,7 +71,7 @@ class TaskObserver
             'user_id' => auth()->id(),
             'subject_type' => 'Task',
             'subject_id' => $task->id,
-            'description' => auth()->user()->name . ' changed ' . implode(', ', $descriptions),
+            'description' => auth()->user()->name . ' changed ' . implode(', ', $descriptions) . ' on task "' . $task->title . '"',
             'properties' => $changes,
         ]);
     }

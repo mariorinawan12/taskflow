@@ -48,9 +48,9 @@
                                 <h2 class="text-white text-sm font-semibold">{{ $workspace->name }}</h2>
                                 <div class="flex items-center gap-2 mt-0.5">
                                     <span class="text-[11px] font-medium
-                                            {{ $workspace->pivot->role === 'owner' ? 'text-lime-400' : '' }}
-                                            {{ $workspace->pivot->role === 'admin' ? 'text-blue-400' : ''}}
-                                            {{ $workspace->pivot->role === 'member' ? 'text-gray-500' : '' }}">
+                                                    {{ $workspace->pivot->role === 'owner' ? 'text-lime-400' : '' }}
+                                                    {{ $workspace->pivot->role === 'admin' ? 'text-blue-400' : ''}}
+                                                    {{ $workspace->pivot->role === 'member' ? 'text-gray-500' : '' }}">
                                         {{ ucfirst($workspace->pivot->role) }}
                                     </span>
                                     <span class="text-gray-700">.</span>
@@ -73,12 +73,18 @@
             </a>
         @endif
 
-        <form action="{{ route('logout') }}" method="POST" class="mt-6 text-center">
-            @csrf
-            <button type="submit" class="text-gray-600 hover:text-red-400 text-xs transition-colors">
-                Sign out
-            </button>
-        </form>
+        <div class="mt-6 flex items-center justify-center gap-3">
+            <a href="{{ route('profile.edit') }}" class="text-gray-600 hover:text-white text-xs transition-colors">
+                Profile
+            </a>
+            <span class="text-gray-800">.</span>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="text-gray-600 hover:text-red-400 text-xs transition-colors">
+                    Sign out
+                </button>
+            </form>
+        </div>
     </div>
 
     <script>

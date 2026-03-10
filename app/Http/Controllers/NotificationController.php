@@ -10,15 +10,23 @@ class NotificationController extends Controller
 {
     public function index(): View
     {
+        $workspaceId = session('current_workspace_id');
+
         $notifications = auth()->user()
             ->notifications()
+            ->whereRaw("(data::jsonb->>'workspace_id')::integer = ?", [$workspaceId])
             ->latest()
             ->paginate(20);
 
-        auth()->user()->unreadNotifications->markAsRead();
+        auth()->user()
+            ->unreadNotifications()
+            ->whereRaw("(data::jsonb->>'workspace_id')::integer = ?", [$workspaceId])
+            ->update(['read_at' => now()]);
 
         return view('notifications.index', compact('notifications'));
     }
+
+
 
     public function destroy(string $id): RedirectResponse
     {

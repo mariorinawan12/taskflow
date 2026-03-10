@@ -74,10 +74,10 @@
                             </div>
                         </div>
                         <span class="px-2 py-0.5 rounded text-[11px] font-medium
-                                            {{ $member->pivot->role === 'owner' ? 'bg-lime-500/10 text-lime-400' : '' }}
-                                            {{ $member->pivot->role === 'admin' ? 'bg-blue-500/10 text-blue-400' : '' }}
-                                            {{ $member->pivot->role === 'member' ? 'bg-gray-800 text-gray-500' : ''}}
-                                            ">
+                                    {{ $member->pivot->role === 'owner' ? 'bg-lime-500/10 text-lime-400' : '' }}
+                                    {{ $member->pivot->role === 'admin' ? 'bg-blue-500/10 text-blue-400' : '' }}
+                                    {{ $member->pivot->role === 'member' ? 'bg-gray-800 text-gray-500' : ''}}
+                                    ">
                             {{ ucfirst($member->pivot->role) }}
                         </span>
                     </div>
