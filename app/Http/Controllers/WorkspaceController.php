@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreWorkspaceRequest;
-use App\Models\Workspace;
 use App\Enums\WorkspaceRole;
-use App\Models\Project;
-use App\Models\Task;
+use App\Http\Requests\StoreWorkspaceRequest;
 use App\Models\Activity;
+use App\Models\Conversation;
+use App\Models\Task;
+use App\Models\Workspace;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -22,6 +22,7 @@ class WorkspaceController extends Controller
     public function index(): View
     {
         $workspaces = auth()->user()->workspaces()->withCount(['members', 'projects'])->get();
+
         return view('workspace.index', compact('workspaces'));
     }
 
@@ -77,10 +78,9 @@ class WorkspaceController extends Controller
         $count = 1;
 
         while (Workspace::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count;
+            $slug = $originalSlug.'-'.$count;
             $count++;
         }
-
 
         $workspace = Workspace::create([
             'name' => $request->name,
@@ -94,5 +94,42 @@ class WorkspaceController extends Controller
         ]);
 
         return redirect()->route('workspace.dashboard', $workspace->slug);
+    }
+
+    public function chat(): View
+    {
+        $workspace = Workspace::find(session('current_workspace_id'));
+
+        $conversations = Conversation::whereHas('users', function ($q) {
+            $q->where('users.id', auth()->id());
+        })
+            ->with([
+                'users' => function ($q) {
+                    $q->where('users.id', '!=', auth()->id());
+                },
+            ])
+            ->get()
+            ->map(function ($conv) {
+                if ($conv->name) {
+                    $conv->display_name = $conv->name;
+                    $conv->is_group = true;
+                } else {
+                    $conv->display_name = $conv->users->first()?->name ?? 'Direct Message';
+                    $conv->is_group = false;
+                }
+
+                return $conv;
+            });
+
+        $members = $workspace->members()->where('users.id', '!=', auth()->id())->get();
+
+        $generalMessages = $workspace->messages()
+            ->with(['user', 'attachments'])
+            ->latest()
+            ->take(50)
+            ->get()
+            ->reverse();
+
+        return view('workspace.chat', compact('workspace', 'conversations', 'members', 'generalMessages'));
     }
 }

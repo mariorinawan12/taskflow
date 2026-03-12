@@ -9,6 +9,7 @@ use App\Models\Scopes\WorkspaceScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Task extends Model
 {
@@ -62,5 +63,10 @@ class Task extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(TaskComment::class);
+    }
+
+    public function messages(): MorphMany
+    {
+        return $this->morphMany(Message::class, 'messageable');
     }
 }

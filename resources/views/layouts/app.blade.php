@@ -88,6 +88,12 @@
                 Dashboard
             </a>
 
+            <a href="{{ route('workspace.chat', $currentWorkspace->slug) }}"
+                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors {{ request()->routeIs('workspace.chat') ? 'bg-indigo-500/10 text-indigo-400 font-medium' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
+                <i data-lucide="message-square" class="w-4 h-4"></i>
+                <span>Messages</span>
+            </a>
+
             <a href="{{ route('projects.index', $currentWorkspace->slug)}}"
                 class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
             {{ request()->routeIs('projects.*') ? 'bg-lime-500/10 text-lime-400 border border-lime-500/20' : 'text-gray-400 hover:text-white hover:bg-gray-800/70' }}">

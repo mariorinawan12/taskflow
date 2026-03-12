@@ -5,7 +5,7 @@
 @section('content')
 
     {{-- Alpine Component for whole page --}}
-    <div x-data="{ showEditModal: false }">
+    <div x-data="{ showEditModal: false, ...taskChatComponent({{ $task->id }}, {{ auth()->id() }}) }">
 
         {{-- Breadcrumb & Top Actions --}}
         <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -284,69 +284,16 @@
 
             {{-- RIGHT COLUMN (2/5 width): Discussion --}}
             <div class="lg:col-span-2 flex flex-col h-full space-y-2">
-
                 <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-widest pl-1">Discussion</h3>
 
-                <div class="bg-gray-900 border border-gray-800 rounded-2xl flex flex-col overflow-hidden shadow-sm"
-                    style="height: calc(100vh - 160px); min-height: 500px;">
+                <div class="bg-gray-900 border-gray-800 rounded-2xl flex flex-col overflow-hidden shadow-sm"
+                     style="height: calc(100vh - 160px); min-height: 500px;">
 
-                    {{-- Feed / History --}}
-                    <div
-                        class="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
-                        @forelse($comments as $comment)
-                            <div class="flex gap-3">
-                                <div
-                                    class="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center shrink-0 mt-0.5 border border-indigo-500/20">
-                                    <span class="text-xs font-semibold text-indigo-400">
-                                        {{ strtoupper(substr($comment->author->name, 0, 1)) }}
-                                    </span>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-2 mb-1 cursor-default">
-                                        <span class="text-white text-sm font-medium">{{ $comment->author->name }}</span>
-                                        <span
-                                            class="text-gray-500 text-[11px]">{{ $comment->created_at->diffForHumans() }}</span>
-                                    </div>
-                                    <div
-                                        class="text-gray-300 text-[14px] leading-relaxed bg-gray-800/50 rounded-2xl rounded-tl-none px-4 py-3 border border-gray-700/50">
-                                        {{ $comment->body }}
-                                    </div>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="h-full flex flex-col justify-center items-center text-gray-500 text-sm opacity-60">
-                                <i data-lucide="messages-square" class="w-12 h-12 mb-3"></i>
-                                <p>No discussion yet.</p>
-                            </div>
-                        @endforelse
-                    </div>
+                     <div class="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+                        <x-chat.messages/>
+                     </div>
 
-                    {{-- Reply Input area --}}
-                    <div class="p-4 bg-gray-800/30 border-t border-gray-800">
-                        <form
-                            action="{{ route('tasks.comments.store', [$currentWorkspace->slug, $project->id, $task->id]) }}"
-                            method="POST">
-                            @csrf
-                            <div
-                                class="relative bg-gray-900 border border-gray-700 rounded-xl focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500 transition-all p-1">
-                                <textarea name="body" rows="2" placeholder="Write a message..."
-                                    class="w-full px-3 py-2 bg-transparent text-sm text-white placeholder-gray-500 resize-none outline-none border-none focus:ring-0"></textarea>
-
-                                <div class="flex justify-between items-center px-2 pb-1">
-                                    <div class="flex items-center gap-1 text-gray-500">
-                                        <button type="button" class="p-1.5 hover:bg-gray-800 hover:text-gray-300 rounded"><i
-                                                data-lucide="paperclip" class="w-4 h-4"></i></button>
-                                        <button type="button" class="p-1.5 hover:bg-gray-800 hover:text-gray-300 rounded"><i
-                                                data-lucide="image" class="w-4 h-4"></i></button>
-                                    </div>
-                                    <button type="submit"
-                                        class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-lg transition-colors text-xs shadow-sm">
-                                        Send
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                     <x-chat.input placeholder="Write a message about this task..."/>
 
                 </div>
             </div>
@@ -499,5 +446,91 @@
         </div>
 
     </div>
+
+    <script>
+        function taskChatComponent(taskId, currentUserId) {
+            return {
+                chatMessages: [],
+                body: '',
+                selectedFiles: [],
+                isLoading: true,
+                isSending: false,
+                currentUserId: currentUserId,
+
+                init(){
+                    this.loadMessages();
+                },
+
+                async loadMessages() {
+                    this.isLoading = true;
+                    try {
+                        const response = await fetch(`/{{ $currentWorkspace->slug }}/chat/task/${taskId}/messages`);
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            this.chatMessages = data.messages;
+                        }
+                    } catch (error) {
+                        console.error('Load messages error', error);
+                    } finally {
+                        this.isLoading = false;
+                        this.$nextTick(() => {
+                            lucide.createIcons();
+                        });
+                    }
+                },
+
+                handleFileSelect(event) {
+                    const files = Array.from(event.target.files);
+                    this.selectedFiles = files.map( file => ({
+                        file: file,
+                        name: file.name,
+                        preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : null
+                    }));
+                    this.$nextTick(() => {
+                        lucide.createIcons();
+                    });
+                },
+
+                removeFile(index) {
+                    this.selectedFiles.splice(index, 1);
+                },
+
+                async sendMessage() {
+                    if (this.isSending || (!this.body.trim() && this.selectedFiles.length === 0)) return;
+
+                    this.isSending = true;
+                    const formData = new FormData();
+                    formData.append('body', this.body);
+
+                    this.selectedFiles.forEach((fileObj, index) => {
+                        formData.append(`attachments[${index}]`, fileObj.file);
+                    });
+
+                    try {
+                        const response = await fetch (`/{{ $currentWorkspace->slug }}/chat/task/${taskId}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            },
+                            body: formData
+                        });
+
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            this.body = '';
+                            this.selectedFiles = [];
+                            await this.loadMessages();
+                        }
+                    } catch (error) {
+                        console.error('Send message error', error);
+                    } finally {
+                        this.isSending = false;
+                    }
+                }
+            }
+        }
+    </script>
 
 @endsection

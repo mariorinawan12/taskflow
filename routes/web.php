@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProjectController;
@@ -51,6 +52,8 @@ Route::middleware('auth')->group(function () {
         ->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
+
+
 });
 
 Route::middleware(['auth', 'resolve.workspace'])
@@ -58,6 +61,8 @@ Route::middleware(['auth', 'resolve.workspace'])
     ->group(function () {
         Route::get('/dashboard', [WorkspaceController::class, 'dashboard'])
             ->name('workspace.dashboard');
+        Route::get('/chat', [WorkspaceController::class, 'chat'])
+            ->name('workspace.chat');
         Route::get('/members', [MemberController::class, 'index'])
             ->name('workspace.members');
         Route::post('/members/invite', [MemberController::class, 'invite'])
@@ -96,8 +101,17 @@ Route::middleware(['auth', 'resolve.workspace'])
         Route::delete('/projects/{project}/tasks/{task}/comments/{comment}', [TaskCommentController::class, 'destroy'])
             ->name('task.comments.destroy');
 
+
         Route::get('/notifications', [NotificationController::class, 'index'])
             ->name('notifications.index');
         Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])
             ->name('notifications.destroy');
+
+        Route::post('/chat/conversation', [ChatController::class, 'createConversation'])
+            ->name('chat.conversation.create');
+        Route::post('/chat/{type}/{id}', [ChatController::class, 'store'])
+            ->name('chat.store');
+
+       Route::get('/chat/{type}/{id}/messages', [ChatController::class, 'loadMessages'])
+       ->name('chat.messages.load');
     });

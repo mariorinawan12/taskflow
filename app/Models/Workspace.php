@@ -40,4 +40,11 @@ class Workspace extends Model
     {
         return $this->hasMany(Activity::class);
     }
+
+    public function messages()
+    {
+        return tap($this->morphMany(Message::class, 'messageable'), function ($query) {
+            $query->orderBy('created_at', 'desc');
+        });
+    }
 }
