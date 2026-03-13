@@ -288,13 +288,31 @@
 
                 <div class="bg-gray-900 border-gray-800 rounded-2xl flex flex-col overflow-hidden shadow-sm"
                      style="height: calc(100vh - 160px); min-height: 500px;">
+                     {{-- Discussion Header --}}
+                     <header class="h-14 border-b border-gray-800 flex items-center justify-between px-5 shrink-0">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+                                <i data-lucide="message-square" class="w-4 h-4 text-indigo-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-white font-semibold text-[14px] leading-none">{{ $task->title }}</p>
+                                <p class="text-[11px] text-gray-500 mt-0.5 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                    <span>Task Discussion</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <button @click="showAttachments = true; fetchAttachments()"
+                                class="p-2 text-gray-500 hover:text-indigo-400 hover:bg-gray-800 rounded-lg transition-colors">
+                                <i data-lucide="paperclip" class="w-4 h-4"></i>
+                        </button>
+                     </header>
 
                      <div class="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
-                        <x-chat.messages/>
+                        <x-chat.messages />
                      </div>
-
                      <x-chat.input placeholder="Write a message about this task..."/>
-
                 </div>
             </div>
 
@@ -445,6 +463,8 @@
             </div>
         </div>
 
+        <x-chat.attachments/>
+
     </div>
 
     <script>
@@ -456,6 +476,9 @@
                 isLoading: true,
                 isSending: false,
                 currentUserId: currentUserId,
+                showAttachments: false,
+                attachmentsList: [],
+                isLoadingAttachments: false,
 
                 init(){
                     this.loadMessages();
@@ -527,6 +550,22 @@
                         console.error('Send message error', error);
                     } finally {
                         this.isSending = false;
+                    }
+                },
+
+                async fetchAttachments() {
+                    this.isLoadingAttachments = true;
+                    try {
+                        const response = await fetch(`/{{ $currentWorkspace->slug }}/chat/task/${taskId}/attachments`);
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            this.attachmentsList = data.attachments;
+                        }
+                    } catch (error) {
+                        console.error('Failed to fetch attachments', error);
+                    } finally {
+                        this.isLoadingAttachments = false;
                     }
                 }
             }

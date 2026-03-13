@@ -149,4 +149,45 @@ class ChatController extends Controller
             'messages' => $messages,
         ]);
     }
+
+    public function getAttachments(Request $request, $workspaceSlug, $type, $id)
+    {
+        $modelClass = match ($type) {
+            'conversations' => Conversation::class,
+            'workspace' => Workspace::class,
+            'task' => Task::class,
+            'project' => Project::class,
+            default => abort(404, 'Invalid type')
+        };
+
+        $target = $modelClass::findOrFail($id);
+
+        if ($type === 'conversations' && ! $target->users()->where('users.id', auth()->id())->exists()){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        $attachments = $target->messages()
+            ->with('attachments')
+            ->whereHas('attachments')
+            ->latest()
+            ->get()
+            ->pluck('attachments')
+            ->flatten()
+            ->map(fn ($a) => [
+                'id' => $a->id,
+                'name' => $a->file_name,
+                'url' => asset('storage/' . $a->file_path),
+                'mime' => $a->mime_type,
+                'size' => $a->size,
+                'uploaded_at' => $a->created_at->timezone('Asia/Jakarta')->format('M d, H:i'),
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'attachments' => $attachments,
+            ]);
+    }
 }

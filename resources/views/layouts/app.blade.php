@@ -83,7 +83,7 @@
             <p class="px-3 mb-2 text-[11px] text-gray-600 uppercase tracking-wider font-medium">Menu</p>
             <a href="{{ route('workspace.dashboard', $currentWorkspace->slug) }}"
                 class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
-                {{ request()->routeIs('workspace.dashboard') ? 'bg-lime-500/10 text-lime-400 border border-lime-500/20' : 'text-gray-400 hover:text-white hover:bg-gray-800/70' }}">
+                {{ request()->routeIs('workspace.dashboard') ? 'bg-indigo-500/10 text-indigo-400' : 'text-gray-400 hover:text-white hover:bg-gray-800/70' }}">
                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                 Dashboard
             </a>
@@ -96,21 +96,21 @@
 
             <a href="{{ route('projects.index', $currentWorkspace->slug)}}"
                 class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
-            {{ request()->routeIs('projects.*') ? 'bg-lime-500/10 text-lime-400 border border-lime-500/20' : 'text-gray-400 hover:text-white hover:bg-gray-800/70' }}">
+            {{ request()->routeIs('projects.*') ? 'bg-indigo-500/10 text-indigo-400' : 'text-gray-400 hover:text-white hover:bg-gray-800/70' }}">
                 <i data-lucide="folder-kanban" class="w-4 h-4"></i>
                 Projects
             </a>
 
             <a href="{{ route('workspace.members', $currentWorkspace->slug) }}"
                 class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
-                    {{ request()->routeIs('workspace.members') ? 'bg-lime-500/10 text-lime-400 border border-lime-500/20' : 'text-gray-400 hover:text-white hover:bg-gray-800/70' }}">
+                    {{ request()->routeIs('workspace.members') ? 'bg-indigo-500/10 text-indigo-400' : 'text-gray-400 hover:text-white hover:bg-gray-800/70' }}">
                 <i data-lucide="users" class="w-4 h-4"></i>
                 Members
             </a>
 
             <a href="{{ route('notifications.index', $currentWorkspace->slug) }}"
                 class="nav-link flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium
-                {{ request()->routeIs('notifications.*') ? 'bg-lime-500/10 text-lime-400 border border-lime-500/20' : 'text-gray-400 hover:text-white hover:bg-gray-800/70' }}">
+                {{ request()->routeIs('notifications.*') ? 'bg-indigo-500/10 text-indigo-400' : 'text-gray-400 hover:text-white hover:bg-gray-800/70' }}">
                 <span class="flex items-center gap-3">
                     <i data-lucide="bell" class="w-4 h-4"></i>
                     Notifications

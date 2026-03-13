@@ -111,7 +111,8 @@ Route::middleware(['auth', 'resolve.workspace'])
             ->name('chat.conversation.create');
         Route::post('/chat/{type}/{id}', [ChatController::class, 'store'])
             ->name('chat.store');
-
-       Route::get('/chat/{type}/{id}/messages', [ChatController::class, 'loadMessages'])
-       ->name('chat.messages.load');
+        Route::get('/chat/{type}/{id}/messages', [ChatController::class, 'loadMessages'])
+            ->name('chat.messages.load');
+        Route::get('/chat/{type}/{id}/attachments', [ChatController::class, 'getAttachments'])
+            ->name('chat.attachments');
     });
